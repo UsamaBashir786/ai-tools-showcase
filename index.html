@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Tools Showcase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="shortcut icon" href="ai cody.png" type="image/x-icon">
+    <style>
+      /* Custom styles beyond Tailwind */
+      .card-transition {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card-transition:hover {
+        transform: translateY(-5px);
+      }
+      .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+      }
+      /* Animation for card entrance */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+      /* Hide scrollbar but keep functionality */
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        /* width: 100%; */
+        height: 100%;
+        overflow-y: scroll;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 99999;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal.show {
+        display: flex;
+      }
+      /* Glass morphism effect */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+      /* Modern gradient button */
+      .gradient-btn {
+        background: linear-gradient(to right, #4f46e5, #7c3aed);
+        transition: all 0.3s ease;
+      }
+      .gradient-btn:hover {
+        background: linear-gradient(to right, #4338ca, #6d28d9);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+      }
+      /* Modern card design */
+      .modern-card {
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(229, 231, 235, 0.5);
+        overflow: hidden;
+      }
+      .modern-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        border-color: rgba(209, 213, 219, 0.8);
+      }
+      /* Custom checkbox style */
+      .custom-checkbox {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        border-radius: 6px;
+        background-color: white;
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+        vertical-align: middle;
+      }
+      .custom-checkbox:checked {
+        background-color: #4f46e5;
+        border-color: #4f46e5;
+      }
+      .custom-checkbox:checked:after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+      /* Tooltip style */
+      .tooltip {
+        position: relative;
+      }
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 120px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+      /* SVG preview styles */
+      .svg-preview {
+        width: 100%;
+        height: 120px;
+        border: 1px dashed #d1d5db;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        background-color: #f9fafb;
+      }
+      /* Category pill style */
+      .category-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        margin: 0.25rem;
+        background-color: #e0e7ff;
+        color: #4f46e5;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .category-pill:hover {
+        background-color: #c7d2fe;
+      }
+      .category-pill .remove-btn {
+        margin-left: 0.5rem;
+        font-size: 1rem;
+        line-height: 1;
+        color: #6366f1;
+        opacity: 0.7;
+      }
+      .category-pill .remove-btn:hover {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-sans">
+    <!-- Header Section -->
+    <header
+      class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-20 shadow-sm"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+          <!-- Logo and Brand -->
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <img src="ai cody.png" alt="" style="width: 30px;">
+            </div>
+            <h1 class="text-lg font-semibold text-gray-800">
+              AI Tools Showcase
+            </h1>
+          </div>
+
+          <!-- Navigation -->
+          <!-- <nav class="hidden md:flex items-center space-x-8">
+            <a
+              href="#"
+              class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 font-medium"
+              >Home</a
+            >
+            <a
+              href="#"
+              class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 font-medium"
+              >Browse</a
+            >
+            <a
+              href="#"
+              class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 font-medium"
+              >Categories</a
+            >
+            <a
+              href="#"
+              class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 font-medium"
+              >About</a
+            >
+          </nav> -->
+
+          <!-- User Actions -->
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <button
+                id="theme-toggle"
+                class="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none transition-colors duration-200"
+              >
+                <svg
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <button
+              id="add-from-header"
+              class="hidden md:flex items-center px-4 py-2 gradient-btn text-white rounded-xl text-sm font-medium shadow-sm transition-all duration-200"
+            >
+              <svg
+                class="h-4 w-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              Add Tool
+            </button>
+
+            <!-- Mobile Menu Button -->
+            <button
+              id="mobile-menu-button"
+              class="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
+            >
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu (Hidden by default) -->
+      <div
+        id="mobile-menu"
+        class="md:hidden hidden bg-white shadow-lg rounded-b-lg"
+      >
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a
+            href="#"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-200"
+            >Home</a
+          >
+          <a
+            href="#"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-200"
+            >Browse</a
+          >
+          <a
+            href="#"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-200"
+            >Categories</a
+          >
+          <a
+            href="#"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-200"
+            >About</a
+          >
+          <button
+            id="mobile-add-btn"
+            class="mt-2 w-full flex items-center justify-center px-4 py-2 gradient-btn text-white rounded-xl text-sm font-medium shadow-sm"
+          >
+            <svg
+              class="h-4 w-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Add Tool
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Add margin-top to your main content to account for the fixed header -->
+    <style>
+      main {
+      }
+
+      /* Add this if you don't already have it */
+      .gradient-btn {
+        background: linear-gradient(to right, #4f46e5, #7c3aed);
+        transition: all 0.3s ease;
+      }
+
+      .gradient-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+      }
+    </style>
+
+    <script>
+      // Add this to your existing JavaScript
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const themeToggle = document.getElementById("theme-toggle");
+        const addFromHeader = document.getElementById("add-from-header");
+        const mobileAddBtn = document.getElementById("mobile-add-btn");
+
+        // Toggle mobile menu
+        mobileMenuButton.addEventListener("click", function () {
+          mobileMenu.classList.toggle("hidden");
+        });
+
+        // Theme toggle functionality (if you want to implement dark mode)
+        themeToggle.addEventListener("click", function () {
+          // Toggle dark mode class on body or html element
+          document.documentElement.classList.toggle("dark-mode");
+
+          // Update icon
+          const icon = themeToggle.querySelector("svg");
+          if (document.documentElement.classList.contains("dark-mode")) {
+            icon.innerHTML =
+              '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
+          } else {
+            icon.innerHTML =
+              '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
+          }
+        });
+
+        // Connect the header "Add Tool" buttons to open the modal
+        if (addFromHeader) {
+          addFromHeader.addEventListener("click", function () {
+            const addToolModal = document.getElementById("add-tool-modal");
+            if (addToolModal) {
+              addToolModal.classList.add("show");
+            }
+          });
+        }
+
+        if (mobileAddBtn) {
+          mobileAddBtn.addEventListener("click", function () {
+            const addToolModal = document.getElementById("add-tool-modal");
+            if (addToolModal) {
+              addToolModal.classList.add("show");
+              // Close the mobile menu when opening the modal
+              mobileMenu.classList.add("hidden");
+            }
+          });
+        }
+      });
+    </script>
+
+    <div class="flex flex-col md:flex-row h-screen mt-20">
+      <!-- Left Sidebar -->
+      <aside
+        class="mt-16 w-full md:w-72 lg:w-80 glass-card shadow-lg p-6 md:h-screen md:fixed md:left-0 md:top-0 z-10 overflow-y-auto"
+      >
+        <div class="mb-8">
+          <h1 class="text-2xl font-semibold text-gray-800 flex items-center">
+            AI Tools Showcase
+          </h1>
+          <p class="text-gray-600 mt-2">
+            Add and discover the best AI tools for your workflow
+          </p>
+        </div>
+
+        <!-- Add New Tool Button -->
+        <div class="mb-6">
+          <button
+            id="add-tool-btn"
+            class="w-full py-3 px-4 gradient-btn text-white shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 transition-all duration-200 flex items-center justify-center"
+          >
+            <svg
+              class="h-5 w-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Add New AI Tool
+          </button>
+        </div>
+
+        <!-- Search bar -->
+        <div class="mb-6">
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg
+                class="h-5 w-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </span>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Search AI tools..."
+              class="search-input w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+            />
+          </div>
+        </div>
+
+        <!-- Categories with Manage Button -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-3">
+            <h2 class="text-lg font-medium text-gray-800">Categories</h2>
+            <button
+              id="manage-categories-btn"
+              class="text-sm text-indigo-600 hover:text-indigo-800 focus:outline-none"
+            >
+              Manage
+            </button>
+          </div>
+          <div class="space-y-2" id="category-filters">
+            <button
+              data-category="all"
+              class="category-btn w-full py-2 px-3 bg-indigo-600 text-white rounded-xl text-left focus:outline-none transition duration-200"
+            >
+              All Tools
+            </button>
+            <!-- Category buttons will be populated here by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-auto pt-6 text-sm text-gray-500">
+          <p>© 2025 AI Tools Showcase</p>
+          <p class="mt-1">Your personal collection of AI tools</p>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main
+        class="w-full md:ml-72 lg:ml-80 p-6 md:p-8 overflow-y-auto hide-scrollbar"
+      >
+        <div class="mb-6 flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800" id="results-title">
+              All Tools
+            </h2>
+            <p class="text-gray-600" id="results-count">
+              No tools added yet. Add your first tool!
+            </p>
+          </div>
+          <div class="flex space-x-2">
+            <button
+              id="grid-view-btn"
+              class="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                ></path>
+              </svg>
+            </button>
+            <button
+              id="list-view-btn"
+              class="p-2 bg-white text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none border border-gray-300"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div
+          id="empty-state"
+          class="flex flex-col items-center justify-center py-12 px-4 text-center"
+        >
+          <svg
+            class="h-24 w-24 text-indigo-200 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+            ></path>
+          </svg>
+          <h3 class="text-xl font-medium text-gray-900 mb-2">
+            No AI tools added yet
+          </h3>
+          <p class="text-gray-600 mb-6 max-w-md">
+            Start building your collection by adding your favorite AI tools.
+            Click the "Add New AI Tool" button to get started.
+          </p>
+          <button
+            id="empty-add-btn"
+            class="px-4 py-2 gradient-btn text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 transition-all duration-200 flex items-center"
+          >
+            <svg
+              class="h-5 w-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Add Your First Tool
+          </button>
+        </div>
+
+        <!-- AI Tools Grid -->
+        <div
+          id="tools-container"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden"
+        >
+          <!-- AI Tool cards will be populated here by JavaScript -->
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Tool Modal -->
+    <div class="modal" id="add-tool-modal">
+      <div class="mt-20 p-5 modal-content glass-card w-full max-w-4xl">
+        <div class="mt-20 p-6">
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">Add New AI Tool</h2>
+            <button
+              id="close-modal-btn"
+              class="text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <form id="add-tool-form" class="space-y-4">
+            <div>
+              <label
+                for="tool-name"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tool Name</label
+              >
+              <input
+                type="text"
+                id="tool-name"
+                name="name"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label
+                for="tool-description"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Description</label
+              >
+              <textarea
+                id="tool-description"
+                name="description"
+                required
+                rows="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              ></textarea>
+            </div>
+            <div>
+              <label
+                for="tool-category"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Category</label
+              >
+              <select
+                id="tool-category"
+                name="category"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <!-- Categories will be populated by JavaScript -->
+              </select>
+            </div>
+            <div>
+              <label
+                for="tool-link"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Website URL</label
+              >
+              <input
+                type="url"
+                id="tool-link"
+                name="link"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label
+                for="tool-icon-color"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Icon Color</label
+              >
+              <div class="grid grid-cols-5 gap-2 mt-1">
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-indigo-600"
+                    class="sr-only"
+                    id="color-indigo"
+                    checked
+                  />
+                  <label
+                    for="color-indigo"
+                    class="w-8 h-8 bg-indigo-600 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-indigo-600"
+                  ></label>
+                  <span class="tooltip-text">Indigo</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-blue-500"
+                    class="sr-only"
+                    id="color-blue"
+                  />
+                  <label
+                    for="color-blue"
+                    class="w-8 h-8 bg-blue-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-blue-500"
+                  ></label>
+                  <span class="tooltip-text">Blue</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-green-500"
+                    class="sr-only"
+                    id="color-green"
+                  />
+                  <label
+                    for="color-green"
+                    class="w-8 h-8 bg-green-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-green-500"
+                  ></label>
+                  <span class="tooltip-text">Green</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-red-500"
+                    class="sr-only"
+                    id="color-red"
+                  />
+                  <label
+                    for="color-red"
+                    class="w-8 h-8 bg-red-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-red-500"
+                  ></label>
+                  <span class="tooltip-text">Red</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-purple-500"
+                    class="sr-only"
+                    id="color-purple"
+                  />
+                  <label
+                    for="color-purple"
+                    class="w-8 h-8 bg-purple-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-purple-500"
+                  ></label>
+                  <span class="tooltip-text">Purple</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-yellow-500"
+                    class="sr-only"
+                    id="color-yellow"
+                  />
+                  <label
+                    for="color-yellow"
+                    class="w-8 h-8 bg-yellow-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-yellow-500"
+                  ></label>
+                  <span class="tooltip-text">Yellow</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-pink-500"
+                    class="sr-only"
+                    id="color-pink"
+                  />
+                  <label
+                    for="color-pink"
+                    class="w-8 h-8 bg-pink-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-pink-500"
+                  ></label>
+                  <span class="tooltip-text">Pink</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-teal-500"
+                    class="sr-only"
+                    id="color-teal"
+                  />
+                  <label
+                    for="color-teal"
+                    class="w-8 h-8 bg-teal-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-teal-500"
+                  ></label>
+                  <span class="tooltip-text">Teal</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-orange-500"
+                    class="sr-only"
+                    id="color-orange"
+                  />
+                  <label
+                    for="color-orange"
+                    class="w-8 h-8 bg-orange-500 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-orange-500"
+                  ></label>
+                  <span class="tooltip-text">Orange</span>
+                </div>
+                <div class="tooltip">
+                  <input
+                    type="radio"
+                    name="iconColor"
+                    value="text-gray-800"
+                    class="sr-only"
+                    id="color-black"
+                  />
+                  <label
+                    for="color-black"
+                    class="w-8 h-8 bg-gray-800 rounded-full cursor-pointer block mx-auto hover:ring-2 hover:ring-offset-2 hover:ring-gray-800"
+                  ></label>
+                  <span class="tooltip-text">Black</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Icon Selection Tabs -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Icon Type</label
+              >
+              <div class="flex border-b border-gray-200 mb-4">
+                <button
+                  type="button"
+                  class="icon-tab-btn py-2 px-4 font-medium text-indigo-600 border-b-2 border-indigo-600"
+                  data-tab="presets"
+                >
+                  Preset Icons
+                </button>
+                <button
+                  type="button"
+                  class="icon-tab-btn py-2 px-4 font-medium text-gray-500 hover:text-gray-700"
+                  data-tab="custom"
+                >
+                  Custom SVG
+                </button>
+              </div>
+
+              <!-- Preset Icons Tab -->
+              <div id="presets-tab" class="icon-tab-content">
+                <div class="grid grid-cols-5 gap-3 mt-1">
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="lightbulb"
+                      class="sr-only preset-icon-radio"
+                      id="icon-lightbulb"
+                      checked
+                    />
+                    <label
+                      for="icon-lightbulb"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Lightbulb</span>
+                  </div>
+                  <!-- More preset icons -->
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="code"
+                      class="sr-only preset-icon-radio"
+                      id="icon-code"
+                    />
+                    <label
+                      for="icon-code"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Code</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="chat"
+                      class="sr-only preset-icon-radio"
+                      id="icon-chat"
+                    />
+                    <label
+                      for="icon-chat"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-colitems-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Chat</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="image"
+                      class="sr-only preset-icon-radio"
+                      id="icon-image"
+                    />
+                    <label
+                      for="icon-image"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Image</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="document"
+                      class="sr-only preset-icon-radio"
+                      id="icon-document"
+                    />
+                    <label
+                      for="icon-document"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Document</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="microphone"
+                      class="sr-only preset-icon-radio"
+                      id="icon-microphone"
+                    />
+                    <label
+                      for="icon-microphone"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Microphone</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="robot"
+                      class="sr-only preset-icon-radio"
+                      id="icon-robot"
+                    />
+                    <label
+                      for="icon-robot"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Robot</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="brain"
+                      class="sr-only preset-icon-radio"
+                      id="icon-brain"
+                    />
+                    <label
+                      for="icon-brain"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Brain</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="search"
+                      class="sr-only preset-icon-radio"
+                      id="icon-search"
+                    />
+                    <label
+                      for="icon-search"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Search</span>
+                  </div>
+                  <div class="tooltip text-center">
+                    <input
+                      type="radio"
+                      name="icon"
+                      value="pen"
+                      class="sr-only preset-icon-radio"
+                      id="icon-pen"
+                    />
+                    <label
+                      for="icon-pen"
+                      class="cursor-pointer hover:bg-gray-100 p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <svg
+                        class="h-6 w-6 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <span class="tooltip-text">Pen</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Custom SVG Tab -->
+              <div id="custom-tab" class="icon-tab-content hidden">
+                <div>
+                  <div class="svg-preview" id="svg-preview">
+                    <p class="text-gray-400">SVG preview will appear here</p>
+                  </div>
+                  <textarea
+                    id="custom-svg-code"
+                    name="customSvg"
+                    rows="5"
+                    placeholder="Paste your SVG code here..."
+                    class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="pt-2">
+              <button
+                type="submit"
+                class="w-full py-2 px-4 gradient-btn text-white rounded-md hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-md transition-all duration-200"
+              >
+                Add Tool
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage Categories Modal -->
+    <div class="modal" id="manage-categories-modal">
+      <div
+        class="mt-20 p-5 mb-20 modal-content modern-card glass-card w-full max-w-md"
+      >
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">
+              Manage Categories
+            </h2>
+            <button
+              id="close-categories-modal-btn"
+              class="text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div>
+            <div
+              id="categories-container"
+              class="mb-4 min-h-16 border border-gray-200 rounded-lg p-2"
+            >
+              <!-- Category pills will be added here -->
+            </div>
+            <div class="flex space-x-2">
+              <input
+                type="text"
+                id="new-category-input"
+                placeholder="Add a new category"
+                class="flex-grow px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="button"
+                id="add-category-btn"
+                class="px-4 py-2 gradient-btn text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pre loader -->
+
+    <!-- AI-Themed Futuristic Preloader -->
+    <div
+      id="preloader"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900"
+    >
+      <div class="preloader-content text-center">
+        <!-- Neural Network Animation -->
+        <div class="neural-network mb-6">
+          <svg width="200" height="200" viewBox="0 0 200 200" class="mx-auto">
+            <!-- Nodes -->
+            <g class="nodes">
+              <circle
+                class="node node-1"
+                cx="40"
+                cy="40"
+                r="5"
+                fill="#4F46E5"
+              />
+              <circle
+                class="node node-2"
+                cx="40"
+                cy="80"
+                r="5"
+                fill="#4F46E5"
+              />
+              <circle
+                class="node node-3"
+                cx="40"
+                cy="120"
+                r="5"
+                fill="#4F46E5"
+              />
+              <circle
+                class="node node-4"
+                cx="40"
+                cy="160"
+                r="5"
+                fill="#4F46E5"
+              />
+
+              <circle
+                class="node node-5"
+                cx="100"
+                cy="50"
+                r="5"
+                fill="#7C3AED"
+              />
+              <circle
+                class="node node-6"
+                cx="100"
+                cy="100"
+                r="5"
+                fill="#7C3AED"
+              />
+              <circle
+                class="node node-7"
+                cx="100"
+                cy="150"
+                r="5"
+                fill="#7C3AED"
+              />
+
+              <circle
+                class="node node-8"
+                cx="160"
+                cy="80"
+                r="5"
+                fill="#4F46E5"
+              />
+              <circle
+                class="node node-9"
+                cx="160"
+                cy="120"
+                r="5"
+                fill="#4F46E5"
+              />
+            </g>
+
+            <!-- Connections -->
+            <g class="connections" stroke-width="1.5" stroke-linecap="round">
+              <!-- Input to Hidden -->
+              <line
+                class="connection c1-5"
+                x1="40"
+                y1="40"
+                x2="100"
+                y2="50"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c1-6"
+                x1="40"
+                y1="40"
+                x2="100"
+                y2="100"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c1-7"
+                x1="40"
+                y1="40"
+                x2="100"
+                y2="150"
+                stroke="#4F46E5"
+              />
+
+              <line
+                class="connection c2-5"
+                x1="40"
+                y1="80"
+                x2="100"
+                y2="50"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c2-6"
+                x1="40"
+                y1="80"
+                x2="100"
+                y2="100"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c2-7"
+                x1="40"
+                y1="80"
+                x2="100"
+                y2="150"
+                stroke="#4F46E5"
+              />
+
+              <line
+                class="connection c3-5"
+                x1="40"
+                y1="120"
+                x2="100"
+                y2="50"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c3-6"
+                x1="40"
+                y1="120"
+                x2="100"
+                y2="100"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c3-7"
+                x1="40"
+                y1="120"
+                x2="100"
+                y2="150"
+                stroke="#4F46E5"
+              />
+
+              <line
+                class="connection c4-5"
+                x1="40"
+                y1="160"
+                x2="100"
+                y2="50"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c4-6"
+                x1="40"
+                y1="160"
+                x2="100"
+                y2="100"
+                stroke="#4F46E5"
+              />
+              <line
+                class="connection c4-7"
+                x1="40"
+                y1="160"
+                x2="100"
+                y2="150"
+                stroke="#4F46E5"
+              />
+
+              <!-- Hidden to Output -->
+              <line
+                class="connection c5-8"
+                x1="100"
+                y1="50"
+                x2="160"
+                y2="80"
+                stroke="#7C3AED"
+              />
+              <line
+                class="connection c5-9"
+                x1="100"
+                y1="50"
+                x2="160"
+                y2="120"
+                stroke="#7C3AED"
+              />
+
+              <line
+                class="connection c6-8"
+                x1="100"
+                y1="100"
+                x2="160"
+                y2="80"
+                stroke="#7C3AED"
+              />
+              <line
+                class="connection c6-9"
+                x1="100"
+                y1="100"
+                x2="160"
+                y2="120"
+                stroke="#7C3AED"
+              />
+
+              <line
+                class="connection c7-8"
+                x1="100"
+                y1="150"
+                x2="160"
+                y2="80"
+                stroke="#7C3AED"
+              />
+              <line
+                class="connection c7-9"
+                x1="100"
+                y1="150"
+                x2="160"
+                y2="120"
+                stroke="#7C3AED"
+              />
+            </g>
+
+            <!-- Data pulses -->
+            <circle
+              class="data-pulse pulse-1"
+              cx="40"
+              cy="40"
+              r="2"
+              fill="#ffffff"
+            />
+            <circle
+              class="data-pulse pulse-2"
+              cx="40"
+              cy="80"
+              r="2"
+              fill="#ffffff"
+            />
+            <circle
+              class="data-pulse pulse-3"
+              cx="40"
+              cy="120"
+              r="2"
+              fill="#ffffff"
+            />
+          </svg>
+        </div>
+
+        <!-- Text elements -->
+        <h3 class="text-xl font-bold text-white mb-2">
+          Initializing AI Tools Platform
+        </h3>
+        <div class="typing-text text-indigo-300 h-6 mb-4">
+          Loading neural connections...
+        </div>
+
+        <!-- Progress bar -->
+        <div
+          class="w-64 mx-auto bg-gray-700 rounded-full h-2.5 mb-5 overflow-hidden"
+        >
+          <div
+            class="progress-bar h-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600"
+            style="width: 0%"
+          ></div>
+        </div>
+
+        <!-- Status text -->
+        <p class="text-gray-400 text-sm">
+          Optimizing interface for maximum productivity
+        </p>
+      </div>
+    </div>
+
+    <style>
+      /* Preloader base styles */
+      #preloader {
+        transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        background: radial-gradient(circle, #1f2937 0%, #111827 100%);
+      }
+
+      #preloader.hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .preloader-content {
+        transform: translateY(0);
+        transition: transform 0.5s ease-out;
+      }
+
+      #preloader.hidden .preloader-content {
+        transform: translateY(-30px);
+      }
+
+      /* Neural network animation */
+      .node {
+        filter: drop-shadow(0 0 5px currentColor);
+        opacity: 0.8;
+      }
+
+      .connection {
+        opacity: 0.3;
+        stroke-dasharray: 15;
+        animation: dash 3s linear infinite;
+      }
+
+      @keyframes dash {
+        to {
+          stroke-dashoffset: -30;
+        }
+      }
+
+      .connection:nth-child(odd) {
+        animation-duration: 2.5s;
+      }
+
+      .connection:nth-child(even) {
+        animation-duration: 3.5s;
+      }
+
+      .data-pulse {
+        opacity: 0;
+      }
+
+      .pulse-1 {
+        animation: pulse 2s ease-in-out infinite,
+          moveAlongPath1 2s ease-in-out infinite;
+      }
+
+      .pulse-2 {
+        animation: pulse 2s ease-in-out 0.7s infinite,
+          moveAlongPath2 2s ease-in-out 0.7s infinite;
+      }
+
+      .pulse-3 {
+        animation: pulse 2s ease-in-out 1.4s infinite,
+          moveAlongPath3 2s ease-in-out 1.4s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 0;
+          r: 2;
+        }
+        50% {
+          opacity: 1;
+          r: 3;
+        }
+        100% {
+          opacity: 0;
+          r: 2;
+        }
+      }
+
+      @keyframes moveAlongPath1 {
+        0% {
+          cx: 40;
+          cy: 40;
+        }
+        20% {
+          cx: 70;
+          cy: 45;
+        }
+        40% {
+          cx: 100;
+          cy: 50;
+        }
+        60% {
+          cx: 130;
+          cy: 65;
+        }
+        80% {
+          cx: 160;
+          cy: 80;
+        }
+        100% {
+          cx: 160;
+          cy: 80;
+        }
+      }
+
+      @keyframes moveAlongPath2 {
+        0% {
+          cx: 40;
+          cy: 80;
+        }
+        20% {
+          cx: 70;
+          cy: 90;
+        }
+        40% {
+          cx: 100;
+          cy: 100;
+        }
+        60% {
+          cx: 130;
+          cy: 110;
+        }
+        80% {
+          cx: 160;
+          cy: 120;
+        }
+        100% {
+          cx: 160;
+          cy: 120;
+        }
+      }
+
+      @keyframes moveAlongPath3 {
+        0% {
+          cx: 40;
+          cy: 120;
+        }
+        20% {
+          cx: 70;
+          cy: 135;
+        }
+        40% {
+          cx: 100;
+          cy: 150;
+        }
+        60% {
+          cx: 130;
+          cy: 135;
+        }
+        80% {
+          cx: 160;
+          cy: 120;
+        }
+        100% {
+          cx: 160;
+          cy: 120;
+        }
+      }
+
+      /* Typing animation */
+      .typing-text::after {
+        content: "|";
+        animation: blink 1s step-end infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* Progress bar animation */
+      .progress-bar {
+        animation: progress 3.5s ease-in-out forwards;
+        background-size: 200% auto;
+        background-position: 0 0;
+      }
+
+      @keyframes progress {
+        0% {
+          width: 0%;
+        }
+        20% {
+          width: 20%;
+        }
+        50% {
+          width: 50%;
+        }
+        70% {
+          width: 70%;
+        }
+        90% {
+          width: 90%;
+        }
+        100% {
+          width: 100%;
+        }
+      }
+    </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Show preloader initially
+        const preloader = document.getElementById("preloader");
+        const typingText = document.querySelector(".typing-text");
+        const progressBar = document.querySelector(".progress-bar");
+
+        // Typing effect for the loading message
+        const messages = [
+          "Loading neural connections...",
+          "Calibrating AI tools...",
+          "Synchronizing data modules...",
+          "Establishing secure connections...",
+          "Finalizing interface elements...",
+        ];
+
+        let messageIndex = 0;
+        let charIndex = 0;
+        let typingInterval;
+
+        function typeText() {
+          if (charIndex < messages[messageIndex].length) {
+            typingText.textContent = messages[messageIndex].substring(
+              0,
+              charIndex + 1
+            );
+            charIndex++;
+          } else {
+            // Pause at the end of the message
+            clearInterval(typingInterval);
+            setTimeout(() => {
+              // Clear and start the next message
+              charIndex = 0;
+              messageIndex = (messageIndex + 1) % messages.length;
+              typingInterval = setInterval(typeText, 50);
+            }, 1000);
+          }
+        }
+
+        // Start typing animation
+        typingInterval = setInterval(typeText, 50);
+
+        // Hide preloader after everything is loaded
+        window.addEventListener("load", function () {
+          setTimeout(function () {
+            // Ensure progress bar reaches 100%
+            progressBar.style.width = "100%";
+
+            // Then hide the preloader
+            setTimeout(() => {
+              preloader.classList.add("hidden");
+              // Clean up the typing interval when preloader is hidden
+              clearInterval(typingInterval);
+            }, 500);
+          }, 3000); // Give at least 3 seconds to display the animation
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initial data
+        let aiTools = [];
+        let categories = [
+          "Natural Language Processing",
+          "Image Generation & Editing",
+          "Audio & Voice",
+          "Productivity & Automation",
+          "Coding & Development",
+          "Research & Knowledge",
+          "Custom Tools",
+        ];
+        let nextId = 1; // For generating IDs for new tools
+
+        let activeCategory = "all";
+        let searchQuery = "";
+        let currentTools = [];
+        let isGridView = true;
+        let useCustomSvg = false;
+        let isEditing = false;
+        let editingToolId = null;
+
+        // DOM Elements
+        const toolsContainer = document.getElementById("tools-container");
+        const emptyState = document.getElementById("empty-state");
+        const searchInput = document.getElementById("search-input");
+        const categoryContainer = document.getElementById("category-filters");
+        const resultsTitle = document.getElementById("results-title");
+        const resultsCount = document.getElementById("results-count");
+        const addToolBtn = document.getElementById("add-tool-btn");
+        const emptyAddBtn = document.getElementById("empty-add-btn");
+        const addToolModal = document.getElementById("add-tool-modal");
+        const closeModalBtn = document.getElementById("close-modal-btn");
+        const addToolForm = document.getElementById("add-tool-form");
+        const gridViewBtn = document.getElementById("grid-view-btn");
+        const listViewBtn = document.getElementById("list-view-btn");
+        const manageCategoriesBtn = document.getElementById(
+          "manage-categories-btn"
+        );
+        const toolCategorySelect = document.getElementById("tool-category");
+        const manageCategoriesModal = document.getElementById(
+          "manage-categories-modal"
+        );
+        const closeCategoriesModalBtn = document.getElementById(
+          "close-categories-modal-btn"
+        );
+        const categoriesContainer = document.getElementById(
+          "categories-container"
+        );
+        const newCategoryInput = document.getElementById("new-category-input");
+        const addCategoryBtn = document.getElementById("add-category-btn");
+
+        // Custom SVG elements
+        const customSvgInput = document.getElementById("custom-svg-code");
+        const svgPreview = document.getElementById("svg-preview");
+
+        // Icon tabs
+        const iconTabBtns = document.querySelectorAll(".icon-tab-btn");
+        const customTab = document.getElementById("custom-tab");
+        const presetsTab = document.getElementById("presets-tab");
+
+        // Get SVG icons for different types
+        function getIconSvg(iconType, colorClass) {
+          const icons = {
+            lightbulb: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>`,
+            code: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+              </svg>`,
+            chat: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+              </svg>`,
+            image: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>`,
+            document: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>`,
+            microphone: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+              </svg>`,
+            robot: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+              </svg>`,
+            brain: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+              </svg>`,
+            search: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>`,
+            pen: `<svg class="h-10 w-10 ${colorClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+              </svg>`,
+          };
+
+          return icons[iconType] || icons["lightbulb"]; // Default to lightbulb if icon not found
+        }
+
+        // Create card for each AI tool - Grid View
+        function createToolCardGrid(tool) {
+          const card = document.createElement("div");
+          card.className = "modern-card bg-white p-6 card-transition fade-in";
+          card.setAttribute("data-category", tool.category);
+          card.setAttribute("data-id", tool.id);
+          card.innerHTML = `
+      <div class="flex items-start">
+          <div class="flex-shrink-0">
+              ${tool.icon}
+          </div>
+          <div class="ml-4">
+              <h3 class="text-lg font-semibold text-gray-900">${tool.name}</h3>
+              <span class="inline-block px-3 py-1 mt-1 mb-2 text-xs font-medium rounded-full text-indigo-800 bg-indigo-100">
+                  ${tool.category}
+              </span>
+              <p class="text-gray-600 text-sm mb-3">${tool.description}</p>
+              <div class="flex justify-between items-center">
+                  <a href="${tool.link}" target="_blank" class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 transition duration-200">
+                      Visit Website
+                      <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                      </svg>
+                  </a>
+                  <div class="flex space-x-2">
+                   <button class="edit-tool-btn text-gray-400 hover:text-indigo-500 transition-colors duration-200" data-id="${tool.id}">
+                      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                      </svg>
+                    </button>
+                      <button class="delete-tool-btn text-gray-400 hover:text-red-500 transition-colors duration-200" data-id="${tool.id}">
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                          </svg>
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    `;
+
+          // Add event listeners for buttons
+          setTimeout(() => {
+            const editBtn = card.querySelector(".edit-tool-btn");
+            editBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              const toolId = parseInt(this.getAttribute("data-id"));
+              editTool(toolId);
+            });
+
+            const deleteBtn = card.querySelector(".delete-tool-btn");
+            deleteBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              const toolId = parseInt(this.getAttribute("data-id"));
+              deleteTool(toolId);
+            });
+          }, 0);
+
+          return card;
+        }
+
+        // Create card for each AI tool - List View
+        function createToolCardList(tool) {
+          const card = document.createElement("div");
+          card.className =
+            "modern-card bg-white p-4 mb-4 card-transition fade-in col-span-full";
+          card.setAttribute("data-category", tool.category);
+          card.setAttribute("data-id", tool.id);
+          card.innerHTML = `
+      <div class="flex items-center">
+          <div class="flex-shrink-0">
+              ${tool.icon}
+          </div>
+          <div class="ml-4 flex-grow">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h3 class="text-lg font-semibold text-gray-900">${tool.name}</h3>
+                      <span class="inline-block px-3 py-1 mt-1 text-xs font-medium rounded-full text-indigo-800 bg-indigo-100">
+                          ${tool.category}
+                      </span>
+                  </div>
+                  <div class="flex space-x-2">
+                      <a href="${tool.link}" target="_blank" class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 transition duration-200">
+                          Visit Website
+                          <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                          </svg>
+                      </a>
+                      <button class="edit-tool-btn text-gray-400 hover:text-indigo-500 transition-colors duration-200" data-id="${tool.id}">
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                          </svg>
+                      </button>
+                      <button class="delete-tool-btn text-gray-400 hover:text-red-500 transition-colors duration-200" data-id="${tool.id}">
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                          </svg>
+                      </button>
+                  </div>
+              </div>
+              <p class="text-gray-600 text-sm my-2">${tool.description}</p>
+          </div>
+      </div>
+    `;
+
+          // Add event listeners for buttons
+          setTimeout(() => {
+            const editBtn = card.querySelector(".edit-tool-btn");
+            editBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              const toolId = parseInt(this.getAttribute("data-id"));
+              editTool(toolId);
+            });
+
+            const deleteBtn = card.querySelector(".delete-tool-btn");
+            deleteBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              const toolId = parseInt(this.getAttribute("data-id"));
+              deleteTool(toolId);
+            });
+          }, 0);
+
+          return card;
+        }
+
+        // Delete tool by ID
+        function deleteTool(id) {
+          if (confirm("Are you sure you want to delete this AI tool?")) {
+            aiTools = aiTools.filter((tool) => tool.id !== id);
+            displayTools();
+
+            // Save to localStorage
+            saveTools();
+          }
+        }
+
+        // Edit tool by ID
+        function editTool(id) {
+          const tool = aiTools.find((tool) => tool.id === id);
+          if (!tool) return;
+
+          // Set editing state
+          isEditing = true;
+          editingToolId = id;
+
+          // Update modal title
+          document.querySelector("#add-tool-modal h2").textContent =
+            "Edit AI Tool";
+          document.querySelector(
+            "#add-tool-form button[type='submit']"
+          ).textContent = "Save Changes";
+
+          // Fill form with tool data
+          document.getElementById("tool-name").value = tool.name;
+          document.getElementById("tool-description").value = tool.description;
+          document.getElementById("tool-category").value = tool.category;
+          document.getElementById("tool-link").value = tool.link;
+
+          // Handle icon color
+          const iconColorClass = tool.icon.match(/text-[a-z]+-[0-9]+/);
+          if (iconColorClass) {
+            document.querySelector(
+              `input[name="iconColor"][value="${iconColorClass[0]}"]`
+            ).checked = true;
+          }
+
+          // Try to determine icon type from SVG path (this is a simplified approach)
+          let iconType = "lightbulb"; // Default
+          for (const [type, svg] of Object.entries(getIconSvgMap())) {
+            if (tool.icon.includes(svg.split("${colorClass}")[1])) {
+              iconType = type;
+              break;
+            }
+          }
+
+          // Set the icon type
+          document.querySelector(
+            `input[name="icon"][value="${iconType}"]`
+          ).checked = true;
+
+          // Show the modal
+          addToolModal.classList.add("show");
+        }
+
+        // Helper function for icon comparison
+        function getIconSvgMap() {
+          // This function doesn't actually need the colorClass variable
+          // since we're just using it for path comparison
+          return {
+            lightbulb: `fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>`,
+            code: `fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>`,
+            chat: `fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>`,
+            // ... add other icon types as needed
+          };
+        }
+
+        // Save tools to localStorage
+        function saveTools() {
+          localStorage.setItem("aiTools", JSON.stringify(aiTools));
+        }
+
+        // Load tools from localStorage
+        function loadTools() {
+          const savedTools = localStorage.getItem("aiTools");
+          if (savedTools) {
+            aiTools = JSON.parse(savedTools);
+
+            // Update nextId to be higher than any existing id
+            if (aiTools.length > 0) {
+              const maxId = Math.max(...aiTools.map((tool) => tool.id));
+              nextId = maxId + 1;
+            }
+          }
+        }
+
+        // Save categories to localStorage
+        function saveCategories() {
+          localStorage.setItem("aiCategories", JSON.stringify(categories));
+        }
+
+        // Load categories from localStorage
+        function loadCategories() {
+          const savedCategories = localStorage.getItem("aiCategories");
+          if (savedCategories) {
+            categories = JSON.parse(savedCategories);
+          }
+        }
+
+        // Populate category buttons in sidebar
+        function populateCategories() {
+          // Clear existing category buttons except 'All Tools'
+          const allBtn = categoryContainer.querySelector(
+            '[data-category="all"]'
+          );
+          categoryContainer.innerHTML = "";
+          categoryContainer.appendChild(allBtn);
+
+          // Add category buttons
+          categories.forEach((category) => {
+            const btn = document.createElement("button");
+            btn.setAttribute("data-category", category);
+            btn.className =
+              "category-btn w-full py-2 px-3 bg-white hover:bg-gray-100 text-gray-800 rounded-xl text-left focus:outline-none transition duration-200";
+            btn.textContent = category;
+            categoryContainer.appendChild(btn);
+          });
+
+          // Add event listeners to new buttons
+          const categoryButtons = document.querySelectorAll(".category-btn");
+          categoryButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+              activeCategory = this.getAttribute("data-category");
+
+              // Update active button style
+              categoryButtons.forEach((btn) => {
+                btn.classList.remove("bg-indigo-600", "text-white");
+                btn.classList.add(
+                  "bg-white",
+                  "hover:bg-gray-100",
+                  "text-gray-800"
+                );
+              });
+
+              this.classList.remove(
+                "bg-white",
+                "hover:bg-gray-100",
+                "text-gray-800"
+              );
+              this.classList.add("bg-indigo-600", "text-white");
+
+              // Update title
+              if (activeCategory === "all") {
+                resultsTitle.textContent = "All Tools";
+              } else {
+                resultsTitle.textContent = activeCategory;
+              }
+
+              // Display filtered tools
+              displayTools();
+            });
+          });
+        }
+
+        // Populate category select in add form
+        function populateCategorySelect() {
+          toolCategorySelect.innerHTML = "";
+          categories.forEach((category) => {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+            toolCategorySelect.appendChild(option);
+          });
+        }
+
+        // Render category pills in the management modal
+        function renderCategoryPills() {
+          categoriesContainer.innerHTML = "";
+          categories.forEach((category) => {
+            const pill = document.createElement("div");
+            pill.className = "category-pill";
+            pill.innerHTML = `
+        ${category}
+        <button type="button" class="remove-btn" data-category="${category}">&times;</button>
+      `;
+            categoriesContainer.appendChild(pill);
+          });
+
+          // Add event listeners to remove buttons
+          const removeButtons =
+            categoriesContainer.querySelectorAll(".remove-btn");
+          removeButtons.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const categoryToRemove = this.getAttribute("data-category");
+
+              // Check if category is being used by any tools
+              const inUse = aiTools.some(
+                (tool) => tool.category === categoryToRemove
+              );
+              if (inUse) {
+                alert(
+                  `Cannot remove category "${categoryToRemove}" because it is being used by one or more tools.`
+                );
+                return;
+              }
+
+              // Remove category
+              categories = categories.filter((cat) => cat !== categoryToRemove);
+              saveCategories();
+              renderCategoryPills();
+              populateCategories();
+              populateCategorySelect();
+            });
+          });
+        }
+
+        // Display tools based on current filters and view mode
+        function displayTools() {
+          // Clear current tools
+          toolsContainer.innerHTML = "";
+
+          // Filter tools based on category and search query
+          currentTools = aiTools.filter((tool) => {
+            const matchesCategory =
+              activeCategory === "all" || tool.category === activeCategory;
+            const matchesSearch =
+              tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              tool.description
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+            return matchesCategory && matchesSearch;
+          });
+
+          // Update results info
+          resultsCount.textContent = `Showing ${currentTools.length} ${
+            currentTools.length === 1 ? "tool" : "tools"
+          }`;
+
+          // Show/hide empty state based on number of tools
+          if (aiTools.length === 0) {
+            emptyState.classList.remove("hidden");
+            toolsContainer.classList.add("hidden");
+          } else if (currentTools.length === 0) {
+            emptyState.classList.remove("hidden");
+            toolsContainer.classList.add("hidden");
+            resultsCount.textContent = "No tools match your filters";
+          } else {
+            emptyState.classList.add("hidden");
+            toolsContainer.classList.remove("hidden");
+          }
+
+          // Set the grid view class based on current view mode
+          if (!isGridView) {
+            toolsContainer.classList.remove(
+              "grid-cols-1",
+              "sm:grid-cols-2",
+              "lg:grid-cols-3"
+            );
+            toolsContainer.classList.add("grid-cols-1");
+          } else {
+            toolsContainer.classList.remove("grid-cols-1");
+            toolsContainer.classList.add(
+              "grid-cols-1",
+              "sm:grid-cols-2",
+              "lg:grid-cols-3"
+            );
+          }
+
+          // Add tools to container with staggered animation
+          currentTools.forEach((tool, index) => {
+            const card = isGridView
+              ? createToolCardGrid(tool)
+              : createToolCardList(tool);
+            card.style.animationDelay = `${index * 0.05}s`;
+            toolsContainer.appendChild(card);
+          });
+        }
+
+        // Custom SVG preview functionality
+        customSvgInput.addEventListener("input", function () {
+          const svgCode = this.value.trim();
+          if (svgCode) {
+            svgPreview.innerHTML = svgCode;
+          } else {
+            svgPreview.innerHTML =
+              '<p class="text-gray-400">SVG preview will appear here</p>';
+          }
+        });
+
+        // Tab switching functionality
+        iconTabBtns.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const tabName = this.getAttribute("data-tab");
+
+            // Update button styles
+            iconTabBtns.forEach((b) => {
+              b.classList.remove(
+                "text-indigo-600",
+                "border-b-2",
+                "border-indigo-600"
+              );
+              b.classList.add("text-gray-500");
+            });
+            this.classList.remove("text-gray-500");
+            this.classList.add(
+              "text-indigo-600",
+              "border-b-2",
+              "border-indigo-600"
+            );
+
+            // Show/hide tabs
+            document.querySelectorAll(".icon-tab-content").forEach((tab) => {
+              tab.classList.add("hidden");
+            });
+
+            document
+              .getElementById(tabName + "-tab")
+              .classList.remove("hidden");
+
+            // Update icon selection mode
+            useCustomSvg = tabName === "custom";
+          });
+        });
+
+        // Handle form submission
+        addToolForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          let icon;
+
+          if (useCustomSvg) {
+            const customSvg = formData.get("customSvg").trim();
+            if (!customSvg) {
+              alert("Please enter custom SVG code or select a preset icon.");
+              return;
+            }
+            icon = customSvg;
+          } else {
+            const iconType = formData.get("icon");
+            const iconColor = formData.get("iconColor");
+            icon = getIconSvg(iconType, iconColor);
+          }
+
+          const toolData = {
+            name: formData.get("name"),
+            description: formData.get("description"),
+            category: formData.get("category"),
+            link: formData.get("link"),
+            icon: icon,
+          };
+
+          if (isEditing) {
+            // Update existing tool
+            const toolIndex = aiTools.findIndex(
+              (tool) => tool.id === editingToolId
+            );
+            if (toolIndex !== -1) {
+              toolData.id = editingToolId; // Preserve the original ID
+              aiTools[toolIndex] = toolData;
+            }
+
+            // Reset editing state
+            isEditing = false;
+            editingToolId = null;
+
+            // Reset modal title and button
+            document.querySelector("#add-tool-modal h2").textContent =
+              "Add New AI Tool";
+            document.querySelector(
+              "#add-tool-form button[type='submit']"
+            ).textContent = "Add Tool";
+          } else {
+            // Add new tool
+            toolData.id = nextId++;
+            aiTools.push(toolData);
+          }
+
+          saveTools();
+          displayTools();
+
+          // Close modal and reset form
+          addToolModal.classList.remove("show");
+          this.reset();
+          svgPreview.innerHTML =
+            '<p class="text-gray-400">SVG preview will appear here</p>';
+
+          // Reset to preset icons tab
+          iconTabBtns[0].click();
+        });
+
+        // Category management functionality
+        // Category management functionality
+        manageCategoriesBtn.addEventListener("click", function () {
+          renderCategoryPills();
+          manageCategoriesModal.classList.add("show");
+        });
+
+        closeCategoriesModalBtn.addEventListener("click", function () {
+          manageCategoriesModal.classList.remove("show");
+        });
+
+        addCategoryBtn.addEventListener("click", function () {
+          const newCategory = newCategoryInput.value.trim();
+          if (newCategory) {
+            if (categories.includes(newCategory)) {
+              alert(`Category "${newCategory}" already exists.`);
+              return;
+            }
+
+            categories.push(newCategory);
+            saveCategories();
+            renderCategoryPills();
+            populateCategories();
+            populateCategorySelect();
+            newCategoryInput.value = "";
+          }
+        });
+
+        newCategoryInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addCategoryBtn.click();
+          }
+        });
+
+        // Handle search input with debounce
+        const debounce = (func, wait) => {
+          let timeout;
+          return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+          };
+        };
+
+        const handleSearch = debounce(function (e) {
+          searchQuery = e.target.value;
+          displayTools();
+        }, 300);
+
+        searchInput.addEventListener("input", handleSearch);
+
+        // View mode toggle
+        gridViewBtn.addEventListener("click", function () {
+          if (!isGridView) {
+            isGridView = true;
+            gridViewBtn.classList.remove(
+              "bg-white",
+              "text-gray-700",
+              "border",
+              "border-gray-300"
+            );
+            gridViewBtn.classList.add("bg-indigo-600", "text-white");
+            listViewBtn.classList.remove("bg-indigo-600", "text-white");
+            listViewBtn.classList.add(
+              "bg-white",
+              "text-gray-700",
+              "border",
+              "border-gray-300"
+            );
+            displayTools();
+          }
+        });
+
+        listViewBtn.addEventListener("click", function () {
+          if (isGridView) {
+            isGridView = false;
+            listViewBtn.classList.remove(
+              "bg-white",
+              "text-gray-700",
+              "border",
+              "border-gray-300"
+            );
+            listViewBtn.classList.add("bg-indigo-600", "text-white");
+            gridViewBtn.classList.remove("bg-indigo-600", "text-white");
+            gridViewBtn.classList.add(
+              "bg-white",
+              "text-gray-700",
+              "border",
+              "border-gray-300"
+            );
+            displayTools();
+          }
+        });
+
+        // Show modal when buttons are clicked
+        addToolBtn.addEventListener("click", function () {
+          addToolModal.classList.add("show");
+        });
+
+        emptyAddBtn.addEventListener("click", function () {
+          addToolModal.classList.add("show");
+        });
+
+        closeModalBtn.addEventListener("click", function () {
+          addToolModal.classList.remove("show");
+
+          // Reset editing state if modal is closed during editing
+          if (isEditing) {
+            isEditing = false;
+            editingToolId = null;
+
+            // Reset modal title and button
+            document.querySelector("#add-tool-modal h2").textContent =
+              "Add New AI Tool";
+            document.querySelector(
+              "#add-tool-form button[type='submit']"
+            ).textContent = "Add Tool";
+          }
+
+          // Reset form
+          addToolForm.reset();
+          svgPreview.innerHTML =
+            '<p class="text-gray-400">SVG preview will appear here</p>';
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener("click", function (e) {
+          if (e.target === addToolModal) {
+            addToolModal.classList.remove("show");
+
+            // Reset editing state if modal is closed during editing
+            if (isEditing) {
+              isEditing = false;
+              editingToolId = null;
+
+              // Reset modal title and button
+              document.querySelector("#add-tool-modal h2").textContent =
+                "Add New AI Tool";
+              document.querySelector(
+                "#add-tool-form button[type='submit']"
+              ).textContent = "Add Tool";
+            }
+
+            // Reset form
+            addToolForm.reset();
+            svgPreview.innerHTML =
+              '<p class="text-gray-400">SVG preview will appear here</p>';
+          }
+          if (e.target === manageCategoriesModal) {
+            manageCategoriesModal.classList.remove("show");
+          }
+        });
+
+        // Batch category update functionality
+        function updateToolCategories(oldCategory, newCategory) {
+          let updatedCount = 0;
+
+          aiTools.forEach((tool) => {
+            if (tool.category === oldCategory) {
+              tool.category = newCategory;
+              updatedCount++;
+            }
+          });
+
+          if (updatedCount > 0) {
+            saveTools();
+            displayTools();
+            return updatedCount;
+          }
+
+          return 0;
+        }
+
+        // Initialize
+        loadTools();
+        loadCategories();
+        populateCategories();
+        populateCategorySelect();
+        displayTools();
+      });
+    </script>
+  </body>
+</html>
